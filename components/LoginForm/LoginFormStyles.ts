@@ -7,12 +7,19 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         marginBottom: 20,
-        color: "white",
+        color: "red",
+        backgroundColor:"black",
+        fontFamily:"Papyrus",
+        textAlign: "right",
+        letterSpacing:-6,
     },
     label: {
         marginTop: 10,
         marginBottom: 5,
-        color: "white",
+        color: "yellow",
+        fontFamily: "Comic Sans MS",
+        fontSize: 8,
+        
     },
     input: {
         borderWidth: 1,
@@ -22,7 +29,7 @@ const styles = StyleSheet.create({
         color: "white",
     },
     button: {
-        backgroundColor: "#007AFF",
+        backgroundColor: "yellow",
         padding: 15,
         marginTop: 20,
         borderRadius: 5,
@@ -38,7 +45,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     toggleText: {
-        color: "#007AFF",
+        color: "#90EE90",
         paddingLeft: 5,
     },
     error: {
