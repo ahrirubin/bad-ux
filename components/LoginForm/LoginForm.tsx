@@ -45,7 +45,7 @@ const LoginForm = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{isLogin ? "Logga in" : "Skapa konto"}</Text>
+            <Text style={styles.title}>{isLogin ? "Skapa konto" : "Logga in"}</Text>
 
             {/* <Link href="/about">About</Link> */}
 
