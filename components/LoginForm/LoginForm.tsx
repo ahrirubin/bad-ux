@@ -47,15 +47,7 @@ const LoginForm = () => {
         <View style={styles.container}>
             <Text style={styles.title}>{isLogin ? "Skapa konto" : "Logga in"}</Text>
 
-            {/* <Link href="/about">About</Link> */}
-
-            <Text style={styles.label}>E-post</Text>
-            <TextInput
-                style={styles.input}
-                keyboardType="email-address"
-                value={email}
-                onChangeText={setEmail}
-            />
+           
 
             <Text style={styles.label}>Lösenord</Text>
             <TextInput
@@ -63,7 +55,19 @@ const LoginForm = () => {
                 secureTextEntry
                 value={password}
                 onChangeText={setPassword}
+                placeholder="ange ditt (läckta) lösenord"
             />
+
+            <Text style={styles.label}>E-post</Text>
+            <TextInput
+                style={styles.input}
+                keyboardType="email-address"
+                value={email}
+                onChangeText={setEmail}
+                placeholder="emailemailemailemailemailemailemail"
+            />
+
+            
 
             {!isLogin && (
                 <>
@@ -85,7 +89,7 @@ const LoginForm = () => {
                 disabled={!isFormValid}
             >
                 <Text style={styles.buttonText}>
-                    {isLogin ? "Logga in" : "Registrera"}
+                    {isLogin ? "Registrera" : "Logga in"}
                 </Text>
             </TouchableOpacity>
 
@@ -95,7 +99,7 @@ const LoginForm = () => {
                 </Text>
                 <TouchableOpacity onPress={() => setIsLogin(!isLogin)}>
                     <Text style={styles.toggleText}>
-                        {isLogin ? "Registrera dig här" : "Logga in här"}
+                        {isLogin ? "Logga in här" : "Registrera dig här"}
                     </Text>
                 </TouchableOpacity>
             </View>
