@@ -3,12 +3,12 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import React, { useRef, useState } from 'react';
 import {
-    Animated,
-    Dimensions,
-    FlatList,
-    ScrollView,
-    StyleSheet,
-    View,
+  Animated,
+  Dimensions,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  View,
 } from 'react-native';
 
 const { width } = Dimensions.get('window');
@@ -235,11 +235,16 @@ const styles = StyleSheet.create({
   },
   slideTitle: {
     marginBottom: 10,
-    textAlign: 'center',
+    color: "red",
+        backgroundColor:"black",
+        fontFamily:"Papyrus",
+        textAlign: "right",
+        letterSpacing:-6,
   },
   scrollDescription: {
     maxHeight: 400,
     width: '100%',
+    
   },
   scrollContent: {
     alignItems: 'flex-start',
@@ -249,6 +254,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     lineHeight: 24,
+    fontFamily: 'Comic Sans MS',
+    color: 'yellow',
   },
   sectionHeader: {
     fontWeight: 'bold',
