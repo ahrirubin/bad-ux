@@ -10,6 +10,16 @@ export default function TabLayout() {
     const tabBarBackgroundColor = colorScheme === 'dark' ? 'red' : 'green';
     const titleStyle = { color: 'yellow' };
 
+    // Function to return a random icon from an array
+    const getRandomIcon = () => {
+        const icons = ['house.fill', 'paperplane.fill', 'information', 'user'];
+        const randomIndex = Math.floor(Math.random() * icons.length);
+        return icons[randomIndex];
+    };
+
+    // tabBarIcon function that uses random icon each time it renders
+    const randomIcon = () => <IconSymbol size={28} name={getRandomIcon()} color={iconColor} />;
+
     return (
         <Tabs
             screenOptions={{
@@ -35,9 +45,7 @@ export default function TabLayout() {
                 options={{
                     title: 'Explore',
                     tabBarLabelStyle: titleStyle,
-                    tabBarIcon: () => (
-                        <IconSymbol size={28} name="paperplane.fill" color={iconColor} />
-                    ),
+                    tabBarIcon: randomIcon,
                 }}
             />
             <Tabs.Screen
@@ -45,9 +53,7 @@ export default function TabLayout() {
                 options={{
                     title: 'Home',
                     tabBarLabelStyle: titleStyle,
-                    tabBarIcon: () => (
-                        <IconSymbol size={28} name="house.fill" color={iconColor} />
-                    ),
+                    tabBarIcon: randomIcon,
                 }}
             />
             <Tabs.Screen
@@ -55,9 +61,7 @@ export default function TabLayout() {
                 options={{
                     title: 'Profile',
                     tabBarLabelStyle: titleStyle,
-                    tabBarIcon: () => (
-                        <IconSymbol size={28} name="user" color={iconColor} />
-                    ),
+                    tabBarIcon: randomIcon,
                 }}
             />
             <Tabs.Screen
@@ -65,9 +69,7 @@ export default function TabLayout() {
                 options={{
                     title: 'About',
                     tabBarLabelStyle: titleStyle,
-                    tabBarIcon: () => (
-                        <IconSymbol size={28} name="information" color={iconColor} />
-                    ),
+                    tabBarIcon: randomIcon,
                 }}
             />
         </Tabs>
