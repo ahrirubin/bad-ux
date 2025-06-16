@@ -1,12 +1,35 @@
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedView } from "@/components/ThemedView";
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
+import { Animated, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+
+const { width, height } = Dimensions.get("window");
 
 const ProfileScreen = () => {
   const [name, setName] = useState("John Doe");
   const [email, setEmail] = useState("johndoe@example.com");
   const [password, setPassword] = useState("password123");
+
+  // For a simple animated background movement
+  const animation = new Animated.Value(0);
+
+  Animated.loop(
+    Animated.timing(animation, {
+      toValue: 1,
+      duration: 6000,
+      useNativeDriver: true,
+    })
+  ).start();
+
+  // Translate the background diagonally
+  const translateX = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -100],
+  });
+  const translateY = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -100],
+  });
 
   const handleSave = () => {
     alert("Profil uppdaterad (inte egentligen)");
@@ -14,9 +37,20 @@ const ProfileScreen = () => {
 
   return (
     <ParallaxScrollView headerBackgroundColor={{ light: "green", dark: "red" }}>
+      <View style={styles.backgroundWrapper}>
+        <Animated.View
+          style={[
+            styles.distractingBackground,
+            {
+              transform: [{ translateX }, { translateY }],
+            },
+          ]}
+        />
+      </View>
+
       <ThemedView style={styles.container}>
         <Text style={styles.title}>Din Profil</Text>
-        
+
         <Text style={styles.label}>Namn</Text>
         <TextInput
           style={styles.input}
@@ -37,9 +71,7 @@ const ProfileScreen = () => {
           placeholderTextColor="#aaa"
         />
 
-        
-
-<Text style={styles.label}>Email</Text>
+        <Text style={styles.label}>Email</Text>
         <TextInput
           style={styles.input}
           value={name}
@@ -57,6 +89,31 @@ const ProfileScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  backgroundWrapper: {
+    ...StyleSheet.absoluteFillObject, // cover entire screen
+    zIndex: -1, // behind everything else
+  },
+  distractingBackground: {
+    width: width * 2,
+    height: height * 2,
+    backgroundColor: "lime",
+    backgroundImage: `
+      repeating-linear-gradient(
+        45deg,
+        red,
+        red 10px,
+        blue 10px,
+        blue 20px,
+        yellow 20px,
+        yellow 30px,
+        pink 30px,
+        pink 40px
+      )
+    `,
+    // React Native doesn't support backgroundImage, so let's fake it with colored stripes below instead
+    // So I will replace this with colored stripes using View children.
+  },
+
   container: {
     flex: 1,
     paddingHorizontal: 24,
@@ -67,17 +124,16 @@ const styles = StyleSheet.create({
   title: {
     marginBottom: 10,
     color: "red",
-        backgroundColor:"black",
-        fontFamily:"Papyrus",
-        
-        letterSpacing:0,
+    backgroundColor: "black",
+    fontFamily: "Papyrus",
+    letterSpacing: 0,
   },
   label: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 16,
     lineHeight: 24,
-    fontFamily: 'Comic Sans MS',
-    color: 'yellow',
+    fontFamily: "Comic Sans MS",
+    color: "yellow",
   },
   input: {
     backgroundColor: "white",
@@ -99,5 +155,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
+// Since React Native doesn't support CSS background gradients natively, let's create the distracting background by stacking colorful stripes:
+
+const DistractingBackground = () => (
+  <View style={[StyleSheet.absoluteFill, { flexDirection: "row", flexWrap: "wrap" }]}>
+    {Array.from({ length: 50 }).map((_, i) => (
+      <View
+        key={i}
+        style={{
+          width: 40,
+          height: 40,
+          backgroundColor: ["red", "blue", "yellow", "pink"][i % 4],
+          transform: [{ rotate: (i % 2 === 0 ? 45 : -45) + "deg" }],
+          opacity: 0.7,
+          margin: 2,
+        }}
+      />
+    ))}
+  </View>
+);
 
 export default ProfileScreen;

@@ -1,7 +1,6 @@
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Dimensions,
@@ -138,6 +137,31 @@ export default function TabTwoScreen() {
 
   const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
+  // Animation for flashing background on carousel container
+  const flashAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(flashAnim, {
+          toValue: 1,
+          duration: 150,
+          useNativeDriver: false,
+        }),
+        Animated.timing(flashAnim, {
+          toValue: 0,
+          duration: 150,
+          useNativeDriver: false,
+        }),
+      ]),
+    ).start();
+  }, [flashAnim]);
+
+  const backgroundColor = flashAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#39FF14', '#FF00FF'], // neon lime to neon magenta
+  });
+
   const renderItem = ({ item }: { item: typeof onboardingData[0] }) => {
     const isFirst = item.key === '1';
 
@@ -172,7 +196,8 @@ export default function TabTwoScreen() {
 
   return (
     <ParallaxScrollView headerBackgroundColor={{ light: 'green', dark: 'red' }}>
-      <ThemedView style={styles.carouselContainer}>
+      {/* Animated container with flashing neon background */}
+      <Animated.View style={[styles.carouselContainer, { backgroundColor }]}>
         <FlatList
           data={onboardingData}
           horizontal
@@ -182,7 +207,7 @@ export default function TabTwoScreen() {
           renderItem={renderItem}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-            { useNativeDriver: false }
+            { useNativeDriver: false },
           )}
           onViewableItemsChanged={onViewableItemsChanged}
           viewabilityConfig={viewConfig}
@@ -211,7 +236,7 @@ export default function TabTwoScreen() {
             );
           })}
         </View>
-      </ThemedView>
+      </Animated.View>
     </ParallaxScrollView>
   );
 }
@@ -235,16 +260,15 @@ const styles = StyleSheet.create({
   },
   slideTitle: {
     marginBottom: 10,
-    color: "red",
-        backgroundColor:"black",
-        fontFamily:"Papyrus",
-        textAlign: "right",
-        letterSpacing:-6,
+    color: 'red',
+    backgroundColor: 'black',
+    fontFamily: 'Papyrus',
+    textAlign: 'right',
+    letterSpacing: -6,
   },
   scrollDescription: {
     maxHeight: 400,
     width: '100%',
-    
   },
   scrollContent: {
     alignItems: 'flex-start',

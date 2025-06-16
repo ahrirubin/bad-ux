@@ -1,9 +1,23 @@
 import { useRouter } from "expo-router";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
-import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { auth } from "../../firebase/firebase.config";
 import styles from "./LoginFormStyles";
+
+const AnnoyingBackground = () => (
+  <View style={annoyingStyles.backgroundContainer}>
+    <Text style={annoyingStyles.emojiPattern}>
+      🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢
+      {"\n"}
+      🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴
+      {"\n"}
+      🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢
+      {"\n"}
+      🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴
+    </Text>
+  </View>
+);
 
 const LoginForm = () => {
     const [email, setEmail] = useState("");
@@ -61,64 +75,86 @@ const LoginForm = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>{isLogin ? "Skapa konto" : "Logga in"}</Text>
+        <View style={{ flex: 1 }}>
+          <AnnoyingBackground />
+          <ScrollView contentContainerStyle={styles.container}>
+              <Text style={styles.title}>{isLogin ? "Skapa konto" : "Logga in"}</Text>
 
-            <Text style={styles.label}>Lösenord</Text>
-            <TextInput
-                style={styles.input}
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-                placeholder="ange ditt (läckta) lösenord"
-            />
+              <Text style={styles.label}>Lösenord</Text>
+              <TextInput
+                  style={styles.input}
+                  secureTextEntry
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="ange ditt (läckta) lösenord"
+              />
 
-            <Text style={styles.label}>E-post</Text>
-            <TextInput
-                style={styles.input}
-                keyboardType="email-address"
-                value={email}
-                onChangeText={setEmail}
-                placeholder="emailemailemailemailemailemailemail"
-            />
+              <Text style={styles.label}>E-post</Text>
+              <TextInput
+                  style={styles.input}
+                  keyboardType="email-address"
+                  value={email}
+                  onChangeText={setEmail}
+                  placeholder="emailemailemailemailemailemailemail"
+              />
 
-            {!isLogin && (
-                <>
-                    <Text style={styles.label}>Bekräfta lösenord</Text>
-                    <TextInput
-                        style={styles.input}
-                        secureTextEntry
-                        value={confirmPassword}
-                        onChangeText={setConfirmPassword}
-                        placeholder="email2email2email2email2email2email2email2"
-                    />
-                </>
-            )}
+              {!isLogin && (
+                  <>
+                      <Text style={styles.label}>Bekräfta lösenord</Text>
+                      <TextInput
+                          style={styles.input}
+                          secureTextEntry
+                          value={confirmPassword}
+                          onChangeText={setConfirmPassword}
+                          placeholder="email2email2email2email2email2email2email2"
+                      />
+                  </>
+              )}
 
-            {error && <Text style={styles.error}>{error}</Text>}
+              {error && <Text style={styles.error}>{error}</Text>}
 
-            <TouchableOpacity
-                style={[styles.button, !isFormValid && styles.disabledButton]}
-                onPress={showLoginAlert}
-                disabled={!isFormValid}
-            >
-                <Text style={styles.buttonText}>
-                    {isLogin ? "Registrera" : "Logga in"}
-                </Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                  style={[styles.button, !isFormValid && styles.disabledButton]}
+                  onPress={showLoginAlert}
+                  disabled={!isFormValid}
+              >
+                  <Text style={styles.buttonText}>
+                      {isLogin ? "Registrera" : "Logga in"}
+                  </Text>
+              </TouchableOpacity>
 
-            <View style={styles.toggleContainer}>
-                <Text style={styles.toggleTextWhite}>
-                    {isLogin ? "Har du inget konto?" : "Har du redan ett konto?"}
-                </Text>
-                <TouchableOpacity onPress={() => setIsLogin(!isLogin)}>
-                    <Text style={styles.toggleText}>
-                        {isLogin ? "Logga in här" : "Registrera dig här"}
-                    </Text>
-                </TouchableOpacity>
-            </View>
+              <View style={styles.toggleContainer}>
+                  <Text style={styles.toggleTextWhite}>
+                      {isLogin ? "Har du inget konto?" : "Har du redan ett konto?"}
+                  </Text>
+                  <TouchableOpacity onPress={() => setIsLogin(!isLogin)}>
+                      <Text style={styles.toggleText}>
+                          {isLogin ? "Logga in här" : "Registrera dig här"}
+                      </Text>
+                  </TouchableOpacity>
+              </View>
+          </ScrollView>
         </View>
     );
 };
+
+const annoyingStyles = StyleSheet.create({
+  backgroundContainer: {
+    position: "absolute",
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: 'lime',
+    justifyContent: "center",
+    alignItems: "center",
+    opacity: 0.4,
+    zIndex: -1,
+  },
+  emojiPattern: {
+    fontSize: 32,
+    lineHeight: 40,
+    textAlign: "center",
+    letterSpacing: 4,
+    fontWeight: "bold",
+  }
+});
 
 export default LoginForm;

@@ -1,11 +1,26 @@
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+
+const AnnoyingBackground = () => (
+  <View style={annoyingStyles.backgroundContainer} pointerEvents="none">
+    <Text style={annoyingStyles.emojiPattern}>
+      🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡
+      {"\n"}
+      🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴
+      {"\n"}
+      🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡
+      {"\n"}
+      🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴🤡🥴
+    </Text>
+  </View>
+);
 
 export default function About() {
   return (
     <ParallaxScrollView headerBackgroundColor={{ light: 'green', dark: 'red' }}>
+      <AnnoyingBackground />
       <ThemedView style={styles.container}>
         <ThemedText type="title" style={styles.title}>
           About
@@ -23,16 +38,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 80, // extra spacing for parallax content
+    paddingVertical: 80,
     paddingHorizontal: 20,
+    backgroundColor: "transparent", // no solid bg here
   },
   title: {
     marginBottom: 10,
-    color: "red",
-        backgroundColor:"black",
-        fontFamily:"Papyrus",
-        textAlign: "right",
-        letterSpacing:-6,
+    color: "yellow",             // yellow for contrast
+    backgroundColor: "transparent", // no black bg
+    fontFamily: "Papyrus",
+    textAlign: "center",          // center so it's easier to read
+    letterSpacing: 0,             // normal spacing
+    fontSize: 36,
+    fontWeight: "bold",
   },
   text: {
     textAlign: 'center',
@@ -40,5 +58,25 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     fontFamily: 'Comic Sans MS',
     color: 'yellow',
+    backgroundColor: "transparent", // no bg so emoji background shows
+  },
+});
+
+const annoyingStyles = StyleSheet.create({
+  backgroundContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'magenta',
+    opacity: 0.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  emojiPattern: {
+    fontSize: 30,
+    lineHeight: 40,
+    textAlign: "center",
+    letterSpacing: 6,
+    fontWeight: "bold",
+    color: 'lime',
   },
 });
