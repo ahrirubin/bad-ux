@@ -1,9 +1,8 @@
+import { useRouter } from "expo-router";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { auth } from "../../firebase/firebase.config";
-
-import { useRouter } from "expo-router";
 import styles from "./LoginFormStyles";
 
 const LoginForm = () => {
@@ -12,10 +11,36 @@ const LoginForm = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isLogin, setIsLogin] = useState(true);
     const [error, setError] = useState("");
+    const [loginClickCount, setLoginClickCount] = useState(0);
     const isFormValid = email.trim() !== "" && password.trim() !== "";
     const router = useRouter();
 
-    const handleSubmit = async () => {
+    const showLoginAlert = () => {
+        let message = "press okay to log in.";
+        if (loginClickCount > 0) {
+            message = "press okay again" + ".".repeat(loginClickCount);
+        }
+
+        Alert.alert(
+            "Login Confirmation",
+            message,
+            [
+                {
+                    text: "OK",
+                    onPress: () => {
+                        const newCount = loginClickCount + 1;
+                        setLoginClickCount(newCount);
+                        if (newCount >= 5) {
+                            actuallyHandleSubmit();
+                        }
+                    },
+                },
+            ],
+            { cancelable: false }
+        );
+    };
+
+    const actuallyHandleSubmit = async () => {
         if (!isLogin && password !== confirmPassword) {
             alert("Lösenorden matchar inte");
             return;
@@ -31,14 +56,6 @@ const LoginForm = () => {
             }
         } catch (error: any) {
             console.error("Firebase error:", error);
-
-            if (error.code) {
-                console.log("Error code:", error.code);
-                console.log("Error message:", error.message);
-            } else {
-                console.log("Raw error object:", JSON.stringify(error));
-            }
-
             setError("Fel användarnamn eller lösenord");
         }
     };
@@ -46,8 +63,6 @@ const LoginForm = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{isLogin ? "Skapa konto" : "Logga in"}</Text>
-
-           
 
             <Text style={styles.label}>Lösenord</Text>
             <TextInput
@@ -67,8 +82,6 @@ const LoginForm = () => {
                 placeholder="emailemailemailemailemailemailemail"
             />
 
-            
-
             {!isLogin && (
                 <>
                     <Text style={styles.label}>Bekräfta lösenord</Text>
@@ -85,7 +98,7 @@ const LoginForm = () => {
 
             <TouchableOpacity
                 style={[styles.button, !isFormValid && styles.disabledButton]}
-                onPress={handleSubmit}
+                onPress={showLoginAlert}
                 disabled={!isFormValid}
             >
                 <Text style={styles.buttonText}>
