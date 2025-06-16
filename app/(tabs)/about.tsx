@@ -1,14 +1,18 @@
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet } from "react-native";
 
 export default function About() {
   return (
     <ParallaxScrollView headerBackgroundColor={{ light: 'green', dark: 'red' }}>
       <ThemedView style={styles.container}>
-        <Text style={styles.text}>
+        <ThemedText type="title" style={styles.title}>
+          About
+        </ThemedText>
+        <ThemedText style={styles.text}>
           Our website strives to provide you with (horrible) recipes.
-        </Text>
+        </ThemedText>
       </ThemedView>
     </ParallaxScrollView>
   );
@@ -20,11 +24,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 80, // extra spacing for parallax content
+    paddingHorizontal: 20,
+  },
+  title: {
+    marginBottom: 10,
+    color: "red",
+        backgroundColor:"black",
+        fontFamily:"Papyrus",
+        textAlign: "right",
+        letterSpacing:-6,
   },
   text: {
-    color: "white",
+    textAlign: 'center',
     fontSize: 16,
-    textAlign: "center",
-    paddingHorizontal: 20,
+    lineHeight: 24,
+    fontFamily: 'Comic Sans MS',
+    color: 'yellow',
   },
 });

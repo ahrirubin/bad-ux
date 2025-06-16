@@ -90,6 +90,7 @@ const LoginForm = () => {
                         secureTextEntry
                         value={confirmPassword}
                         onChangeText={setConfirmPassword}
+                        placeholder="email2email2email2email2email2email2email2"
                     />
                 </>
             )}
