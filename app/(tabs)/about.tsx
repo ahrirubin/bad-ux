@@ -4,7 +4,7 @@ import { StyleSheet, Text } from "react-native";
 export default function About() {
   return (
     <ThemedView style={styles.container}>
-      <Text style={styles.text}>About</Text>
+      <Text style={styles.text}>Our website strives to provide you with (horrible) recipes.</Text>
     </ThemedView>
   );
 }
