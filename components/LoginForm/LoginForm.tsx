@@ -20,122 +20,103 @@ const AnnoyingBackground = () => (
 );
 
 const LoginForm = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [isLogin, setIsLogin] = useState(true);
-    const [error, setError] = useState("");
-    const [loginClickCount, setLoginClickCount] = useState(0);
-    const isFormValid = email.trim() !== "" && password.trim() !== "";
-    const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLogin, setIsLogin] = useState(true);
+  const [error, setError] = useState("");
+  const isFormValid = email.trim() !== "" && password.trim() !== "";
+  const router = useRouter();
 
-    const showLoginAlert = () => {
-        let message = "press okay to log in.";
-        if (loginClickCount > 0) {
-            message = "press okay again" + ".".repeat(loginClickCount);
-        }
+  const actuallyHandleSubmit = async () => {
+    if (!isLogin && password !== confirmPassword) {
+      alert("Lösenorden matchar inte");
+      return;
+    }
 
+    try {
+      if (isLogin) {
+        await signInWithEmailAndPassword(auth, email, password);
+        router.push("/explore");
+      } else {
+        await createUserWithEmailAndPassword(auth, email, password);
         Alert.alert(
-            "Login Confirmation",
-            message,
-            [
-                {
-                    text: "OK",
-                    onPress: () => {
-                        const newCount = loginClickCount + 1;
-                        setLoginClickCount(newCount);
-                        if (newCount >= 5) {
-                            actuallyHandleSubmit();
-                        }
-                    },
-                },
-            ],
-            { cancelable: false }
+          "Kontot är skapat!",
+          "Ditt konto har registrerats framgångsrikt.",
+          [
+            {
+              text: "OK",
+              onPress: () => router.push("/explore"),
+            },
+          ]
         );
-    };
+      }
+    } catch (error: any) {
+      console.error("Firebase error:", error);
+      setError("Fel användarnamn eller lösenord");
+    }
+  };
 
-    const actuallyHandleSubmit = async () => {
-        if (!isLogin && password !== confirmPassword) {
-            alert("Lösenorden matchar inte");
-            return;
-        }
+  return (
+    <View style={{ flex: 1 }}>
+      <AnnoyingBackground />
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>{isLogin ? "Logga in" : "Skapa konto"}</Text>
 
-        try {
-            if (isLogin) {
-                await signInWithEmailAndPassword(auth, email, password);
-                router.push("/explore");
-            } else {
-                await createUserWithEmailAndPassword(auth, email, password);
-                router.push("/explore");
-            }
-        } catch (error: any) {
-            console.error("Firebase error:", error);
-            setError("Fel användarnamn eller lösenord");
-        }
-    };
+        <Text style={styles.label}>E-post</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
+          placeholder="emailemailemailemailemailemailemail"
+        />
 
-    return (
-        <View style={{ flex: 1 }}>
-          <AnnoyingBackground />
-          <ScrollView contentContainerStyle={styles.container}>
-              <Text style={styles.title}>{isLogin ? "Skapa konto" : "Logga in"}</Text>
+        <Text style={styles.label}>Lösenord</Text>
+        <TextInput
+          style={styles.input}
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+          placeholder="ange ditt (läckta) lösenord"
+        />
 
-              <Text style={styles.label}>Lösenord</Text>
-              <TextInput
-                  style={styles.input}
-                  secureTextEntry
-                  value={password}
-                  onChangeText={setPassword}
-                  placeholder="ange ditt (läckta) lösenord"
-              />
+        {!isLogin && (
+          <>
+            <Text style={styles.label}>Bekräfta lösenord</Text>
+            <TextInput
+              style={styles.input}
+              secureTextEntry
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              placeholder="email2email2email2email2email2email2email2"
+            />
+          </>
+        )}
 
-              <Text style={styles.label}>E-post</Text>
-              <TextInput
-                  style={styles.input}
-                  keyboardType="email-address"
-                  value={email}
-                  onChangeText={setEmail}
-                  placeholder="emailemailemailemailemailemailemail"
-              />
+        {error && <Text style={styles.error}>{error}</Text>}
 
-              {!isLogin && (
-                  <>
-                      <Text style={styles.label}>Bekräfta lösenord</Text>
-                      <TextInput
-                          style={styles.input}
-                          secureTextEntry
-                          value={confirmPassword}
-                          onChangeText={setConfirmPassword}
-                          placeholder="email2email2email2email2email2email2email2"
-                      />
-                  </>
-              )}
+        <TouchableOpacity
+          style={[styles.button, !isFormValid && styles.disabledButton]}
+          onPress={actuallyHandleSubmit}
+          disabled={!isFormValid}
+        >
+          <Text style={styles.buttonText}>{isLogin ? "Logga in" : "Registrera"}</Text>
+        </TouchableOpacity>
 
-              {error && <Text style={styles.error}>{error}</Text>}
-
-              <TouchableOpacity
-                  style={[styles.button, !isFormValid && styles.disabledButton]}
-                  onPress={showLoginAlert}
-                  disabled={!isFormValid}
-              >
-                  <Text style={styles.buttonText}>
-                      {isLogin ? "Registrera" : "Logga in"}
-                  </Text>
-              </TouchableOpacity>
-
-              <View style={styles.toggleContainer}>
-                  <Text style={styles.toggleTextWhite}>
-                      {isLogin ? "Har du inget konto?" : "Har du redan ett konto?"}
-                  </Text>
-                  <TouchableOpacity onPress={() => setIsLogin(!isLogin)}>
-                      <Text style={styles.toggleText}>
-                          {isLogin ? "Logga in här" : "Registrera dig här"}
-                      </Text>
-                  </TouchableOpacity>
-              </View>
-          </ScrollView>
+        <View style={styles.toggleContainer}>
+          <Text style={styles.toggleTextWhite}>
+            {isLogin ? "Har du inget konto?" : "Har du redan ett konto?"}
+          </Text>
+          <TouchableOpacity onPress={() => setIsLogin(!isLogin)}>
+            <Text style={styles.toggleText}>
+              {isLogin ? "Registrera dig här" : "Logga in"}
+            </Text>
+          </TouchableOpacity>
         </View>
-    );
+      </ScrollView>
+    </View>
+  );
 };
 
 const annoyingStyles = StyleSheet.create({
