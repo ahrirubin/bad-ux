@@ -1,23 +1,61 @@
 import { useRouter } from "expo-router";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+} from "firebase/auth";
+import { useEffect, useRef, useState } from "react";
+import {
+    Alert,
+    Animated,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { auth } from "../../firebase/firebase.config";
 import styles from "./LoginFormStyles";
 
-const AnnoyingBackground = () => (
-  <View style={annoyingStyles.backgroundContainer}>
-    <Text style={annoyingStyles.emojiPattern}>
-      🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢
-      {"\n"}
-      🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴
-      {"\n"}
-      🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢
-      {"\n"}
-      🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴🟢🔴
-    </Text>
-  </View>
-);
+const FlashingBackground = () => {
+  const flashAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(flashAnim, {
+          toValue: 1,
+          duration: 100,
+          useNativeDriver: false,
+        }),
+        Animated.timing(flashAnim, {
+          toValue: 2,
+          duration: 100,
+          useNativeDriver: false,
+        }),
+        Animated.timing(flashAnim, {
+          toValue: 3,
+          duration: 100,
+          useNativeDriver: false,
+        }),
+        Animated.timing(flashAnim, {
+          toValue: 0,
+          duration: 100,
+          useNativeDriver: false,
+        }),
+      ])
+    ).start();
+  }, [flashAnim]);
+
+  const backgroundColor = flashAnim.interpolate({
+    inputRange: [0, 1, 2, 3],
+    outputRange: ["#39FF14", "#FF00FF", "#00FFFF", "#FFFF00"], // neon lime, magenta, cyan, yellow
+  });
+
+  return (
+    <Animated.View style={[flashingStyles.background, { backgroundColor }]} />
+  );
+};
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -40,16 +78,12 @@ const LoginForm = () => {
         router.push("/explore");
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
-        Alert.alert(
-          "Kontot är skapat!",
-          "Ditt konto har registrerats framgångsrikt.",
-          [
-            {
-              text: "OK",
-              onPress: () => router.push("/explore"),
-            },
-          ]
-        );
+        Alert.alert("Kontot är skapat!", "Ditt konto har registrerats framgångsrikt.", [
+          {
+            text: "OK",
+            onPress: () => router.push("/explore"),
+          },
+        ]);
       }
     } catch (error: any) {
       console.error("Firebase error:", error);
@@ -59,18 +93,9 @@ const LoginForm = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <AnnoyingBackground />
+      <FlashingBackground />
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>{isLogin ? "Logga in" : "Skapa konto"}</Text>
-
-        <Text style={styles.label}>E-post</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="email-address"
-          value={email}
-          onChangeText={setEmail}
-          placeholder="emailemailemailemailemailemailemail"
-        />
 
         <Text style={styles.label}>Lösenord</Text>
         <TextInput
@@ -79,6 +104,15 @@ const LoginForm = () => {
           value={password}
           onChangeText={setPassword}
           placeholder="ange ditt (läckta) lösenord"
+        />
+
+        <Text style={styles.label}>E-post</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
+          placeholder="emailemailemailemailemailemailemail"
         />
 
         {!isLogin && (
@@ -97,11 +131,17 @@ const LoginForm = () => {
         {error && <Text style={styles.error}>{error}</Text>}
 
         <TouchableOpacity
-          style={[styles.button, !isFormValid && styles.disabledButton]}
+          style={[
+            styles.button,
+            !isFormValid && styles.disabledButton,
+            { position: "absolute", bottom: 20, right: 20 },
+          ]}
           onPress={actuallyHandleSubmit}
           disabled={!isFormValid}
         >
-          <Text style={styles.buttonText}>{isLogin ? "Logga in" : "Registrera"}</Text>
+          <Text style={styles.buttonText}>
+            {isLogin ? "Registrera" : "Logga in"}
+          </Text>
         </TouchableOpacity>
 
         <View style={styles.toggleContainer}>
@@ -110,7 +150,7 @@ const LoginForm = () => {
           </Text>
           <TouchableOpacity onPress={() => setIsLogin(!isLogin)}>
             <Text style={styles.toggleText}>
-              {isLogin ? "Registrera dig här" : "Logga in"}
+              {isLogin ? "Logga in" : "Registrera dig här"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -119,23 +159,16 @@ const LoginForm = () => {
   );
 };
 
-const annoyingStyles = StyleSheet.create({
-  backgroundContainer: {
+const flashingStyles = StyleSheet.create({
+  background: {
     position: "absolute",
-    top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: 'lime',
-    justifyContent: "center",
-    alignItems: "center",
-    opacity: 0.4,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    opacity: 0.25,
     zIndex: -1,
   },
-  emojiPattern: {
-    fontSize: 32,
-    lineHeight: 40,
-    textAlign: "center",
-    letterSpacing: 4,
-    fontWeight: "bold",
-  }
 });
 
 export default LoginForm;

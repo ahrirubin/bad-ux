@@ -31,14 +31,16 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: "yellow",
-        padding: 15,
+        padding: 0,
         marginTop: 20,
         borderRadius: 5,
         alignItems: "center",
+        
     },
     buttonText: {
         color: "white",
         fontWeight: "bold",
+        fontSize: 8,
     },
     toggleContainer: {
         flexDirection: "row",
