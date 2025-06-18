@@ -1,7 +1,15 @@
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedView } from "@/components/ThemedView";
 import { useState } from "react";
-import { Animated, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Animated,
+  Dimensions,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const { width, height } = Dimensions.get("window");
 
@@ -10,7 +18,6 @@ const ProfileScreen = () => {
   const [email, setEmail] = useState("johndoe@example.com");
   const [password, setPassword] = useState("password123");
 
-  // For a simple animated background movement
   const animation = new Animated.Value(0);
 
   Animated.loop(
@@ -21,7 +28,6 @@ const ProfileScreen = () => {
     })
   ).start();
 
-  // Translate the background diagonally
   const translateX = animation.interpolate({
     inputRange: [0, 1],
     outputRange: [0, -100],
@@ -90,8 +96,8 @@ const ProfileScreen = () => {
 
 const styles = StyleSheet.create({
   backgroundWrapper: {
-    ...StyleSheet.absoluteFillObject, // cover entire screen
-    zIndex: -1, // behind everything else
+    ...StyleSheet.absoluteFillObject,
+    zIndex: -1,
   },
   distractingBackground: {
     width: width * 2,
@@ -110,10 +116,7 @@ const styles = StyleSheet.create({
         pink 40px
       )
     `,
-    // React Native doesn't support backgroundImage, so let's fake it with colored stripes below instead
-    // So I will replace this with colored stripes using View children.
   },
-
   container: {
     flex: 1,
     paddingHorizontal: 24,
@@ -155,25 +158,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-
-// Since React Native doesn't support CSS background gradients natively, let's create the distracting background by stacking colorful stripes:
-
-const DistractingBackground = () => (
-  <View style={[StyleSheet.absoluteFill, { flexDirection: "row", flexWrap: "wrap" }]}>
-    {Array.from({ length: 50 }).map((_, i) => (
-      <View
-        key={i}
-        style={{
-          width: 40,
-          height: 40,
-          backgroundColor: ["red", "blue", "yellow", "pink"][i % 4],
-          transform: [{ rotate: (i % 2 === 0 ? 45 : -45) + "deg" }],
-          opacity: 0.7,
-          margin: 2,
-        }}
-      />
-    ))}
-  </View>
-);
 
 export default ProfileScreen;

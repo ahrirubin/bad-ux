@@ -49,7 +49,7 @@ const FlashingBackground = () => {
 
   const backgroundColor = flashAnim.interpolate({
     inputRange: [0, 1, 2, 3],
-    outputRange: ["#39FF14", "#FF00FF", "#00FFFF", "#FFFF00"], // neon lime, magenta, cyan, yellow
+    outputRange: ["#39FF14", "#FF00FF", "#00FFFF", "#FFFF00"],
   });
 
   return (
@@ -94,6 +94,7 @@ const LoginForm = () => {
   return (
     <View style={{ flex: 1 }}>
       <FlashingBackground />
+
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>{isLogin ? "Logga in" : "Skapa konto"}</Text>
 
@@ -131,11 +132,7 @@ const LoginForm = () => {
         {error && <Text style={styles.error}>{error}</Text>}
 
         <TouchableOpacity
-          style={[
-            styles.button,
-            !isFormValid && styles.disabledButton,
-            { position: "absolute", bottom: 20, right: 20 },
-          ]}
+          style={[styles.button, !isFormValid && styles.disabledButton]}
           onPress={actuallyHandleSubmit}
           disabled={!isFormValid}
         >

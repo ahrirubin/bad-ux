@@ -90,7 +90,6 @@ Serve with crusty bread.`,
   },
 ];
 
-// Helper to split recipe into formatted JSX
 function formatDescription(text: string) {
   const [ingredientsBlock, instructionsBlock] = text.split(/Instructions:\n?/);
 
@@ -112,9 +111,7 @@ function formatDescription(text: string) {
           <ThemedText style={styles.bulletText}>{item}</ThemedText>
         </View>
       ))}
-
       <View style={styles.sectionGap} />
-
       <ThemedText style={styles.sectionHeader}>Instructions:</ThemedText>
       {instructions.map((step, index) => (
         <ThemedText key={index} style={styles.instructionText}>
@@ -128,6 +125,7 @@ function formatDescription(text: string) {
 export default function TabTwoScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
+  const flashAnim = useRef(new Animated.Value(0)).current;
 
   const onViewableItemsChanged = useRef(({ viewableItems }: any) => {
     if (viewableItems.length > 0) {
@@ -137,53 +135,35 @@ export default function TabTwoScreen() {
 
   const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
-  // Animation for flashing background on carousel container
-  const flashAnim = useRef(new Animated.Value(0)).current;
-
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
-        Animated.timing(flashAnim, {
-          toValue: 1,
-          duration: 150,
-          useNativeDriver: false,
-        }),
-        Animated.timing(flashAnim, {
-          toValue: 0,
-          duration: 150,
-          useNativeDriver: false,
-        }),
-      ]),
+        Animated.timing(flashAnim, { toValue: 1, duration: 150, useNativeDriver: false }),
+        Animated.timing(flashAnim, { toValue: 0, duration: 150, useNativeDriver: false }),
+      ])
     ).start();
   }, [flashAnim]);
 
   const backgroundColor = flashAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ['#39FF14', '#FF00FF'], // neon lime to neon magenta
+    outputRange: ['#39FF14', '#FF00FF'],
   });
 
   const renderItem = ({ item }: { item: typeof onboardingData[0] }) => {
     const isFirst = item.key === '1';
 
     return (
-      <View
-        style={[
-          styles.slide,
-          isFirst ? styles.centeredSlide : styles.scrollableSlide,
-          { width },
-        ]}
-      >
+      <View style={[styles.slide, isFirst ? styles.centeredSlide : styles.scrollableSlide, { width }]}>
         <ThemedText type="title" style={styles.slideTitle}>
           {item.title}
         </ThemedText>
-
         {isFirst ? (
           <ThemedText style={styles.slideDescription}>{item.description}</ThemedText>
         ) : (
           <ScrollView
             style={styles.scrollDescription}
             contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={true}
+            showsVerticalScrollIndicator
           >
             <View style={styles.textContainer}>
               {formatDescription(item.description)}
@@ -196,7 +176,6 @@ export default function TabTwoScreen() {
 
   return (
     <ParallaxScrollView headerBackgroundColor={{ light: 'green', dark: 'red' }}>
-      {/* Animated container with flashing neon background */}
       <Animated.View style={[styles.carouselContainer, { backgroundColor }]}>
         <FlatList
           data={onboardingData}
@@ -207,7 +186,7 @@ export default function TabTwoScreen() {
           renderItem={renderItem}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-            { useNativeDriver: false },
+            { useNativeDriver: false }
           )}
           onViewableItemsChanged={onViewableItemsChanged}
           viewabilityConfig={viewConfig}
@@ -266,6 +245,13 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     letterSpacing: -6,
   },
+  slideDescription: {
+    textAlign: 'center',
+    fontSize: 16,
+    lineHeight: 24,
+    fontFamily: 'Comic Sans MS',
+    color: 'yellow',
+  },
   scrollDescription: {
     maxHeight: 400,
     width: '100%',
@@ -274,12 +260,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingBottom: 20,
   },
-  slideDescription: {
-    textAlign: 'center',
-    fontSize: 16,
-    lineHeight: 24,
-    fontFamily: 'Comic Sans MS',
-    color: 'yellow',
+  textContainer: {
+    backgroundColor: '#fff9c4',
+    borderRadius: 8,
+    padding: 16,
+    width: '100%',
   },
   sectionHeader: {
     fontWeight: 'bold',
@@ -312,12 +297,6 @@ const styles = StyleSheet.create({
   },
   sectionGap: {
     height: 16,
-  },
-  textContainer: {
-    backgroundColor: '#fff9c4',
-    borderRadius: 8,
-    padding: 16,
-    width: '100%',
   },
   pagination: {
     flexDirection: 'row',
